@@ -1,160 +1,153 @@
 package com.example.jordanwright.wtur;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.AsyncTask;
+import android.app.ActionBar;
+import android.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-
-import java.io.IOException;
+import java.util.Locale;
 
 
-public class MainActivity extends Activity {
-    private Button btn;
-    /**
-     * help to toggle between play and pause.
-     */
-    private boolean playPause;
-    private MediaPlayer mediaPlayer;
-    /**
-     * remain false till media is not completed, inside OnCompletionListener make it true.
-     */
-    private boolean intialStage = true;
+public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
+
+    ViewPager pageSwitcher;
+    fragPager herosSidekick;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        btn = (Button) findViewById(R.id.button1);
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        btn.setOnClickListener(pausePlay);
-
-    }
+        if (iAmAPhone()) {
+//        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+            setContentView(R.layout.activity_main);
 
 
-    private View.OnClickListener pausePlay = new View.OnClickListener() {
+            final android.support.v7.app.ActionBar lastActionHero = getSupportActionBar();
 
-        @Override
-        public void onClick(View v) {
-            // TODO Auto-generated method stub
-            // TODO Auto-generated method stub
+            lastActionHero.setNavigationMode(android.support.v7.app.ActionBar.NAVIGATION_MODE_TABS);
 
-            if (!playPause) {
-                btn.setBackgroundResource(R.drawable.trans_pause);
-                if (intialStage)
-                    new Player()
-                            .execute("http://184.18.181.12:8038/;stream/1");
-                else {
-                    if (!mediaPlayer.isPlaying())
-                        mediaPlayer.start();
+            herosSidekick = new fragPager(getSupportFragmentManager());
+
+            pageSwitcher = (ViewPager) findViewById(R.id.book);
+            pageSwitcher.setAdapter(herosSidekick);
+
+            pageSwitcher.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int spot) {
+                    lastActionHero.setSelectedNavigationItem(spot);
                 }
-                playPause = true;
-                //this
-            } else {
-                btn.setBackgroundResource(R.drawable.trans_play);
-                if (mediaPlayer.isPlaying())
-                    mediaPlayer.pause();
-                playPause = false;
-            }
-        }
-    };
+            });
 
-    /**
-     * preparing mediaplayer will take sometime to buffer the content so prepare it inside the background thread and starting it on UI thread.
-     *
-     * @author piyush
-     */
-
-    class Player extends AsyncTask<String, Void, Boolean> {
-        private ProgressDialog progress;
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            // TODO Auto-generated method stub
-            Boolean prepared;
-            try {
-
-                mediaPlayer.setDataSource(params[0]);
-
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            for (int tab = 0; tab < herosSidekick.getCount(); tab++) {
+                lastActionHero.addTab(lastActionHero.newTab().setText(herosSidekick.getPageTitle(tab)).setTabListener(new android.support.v7.app.ActionBar.TabListener() {
+                    @Override
+                    public void onTabSelected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+                        pageSwitcher.setCurrentItem(tab.getPosition());
+                    }
 
                     @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        // TODO Auto-generated method stub
-                        intialStage = true;
-                        playPause = false;
-                        btn.setBackgroundResource(R.drawable.play_button);
-                        mediaPlayer.stop();
-                        mediaPlayer.reset();
+                    public void onTabUnselected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+
                     }
-                });
-                mediaPlayer.prepare();
-                prepared = true;
-            } catch (IllegalArgumentException e) {
-                // TODO Auto-generated catch block
-                Log.d("IllegarArgument", e.getMessage());
-                prepared = false;
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                // TODO Auto-generated catch block
-                prepared = false;
-                e.printStackTrace();
-            } catch (IllegalStateException e) {
-                // TODO Auto-generated catch block
-                prepared = false;
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                prepared = false;
-                e.printStackTrace();
+
+                    @Override
+                    public void onTabReselected(android.support.v7.app.ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
+
+                    }
+                }));
             }
-            return prepared;
+
+        }
+        else{
+            setContentView(R.layout.activity_main);
+        }
+    }
+    /*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
         }
 
-        @Override
-        protected void onPostExecute(Boolean result) {
-            // TODO Auto-generated method stub
-            super.onPostExecute(result);
-            if (progress.isShowing()) {
-                progress.cancel();
-            }
-            Log.d("Prepared", "//" + result);
-            mediaPlayer.start();
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft){
+        pageSwitcher.setCurrentItem(tab.getPosition());
+    }
 
-            intialStage = false;
+    public boolean iAmAPhone(){
+        String devType = getResources().getString(R.string.dev_type);
+
+        if(devType.equalsIgnoreCase("PHONE")){
+            return true;
         }
 
-        public Player() {
-            progress = new ProgressDialog(MainActivity.this);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-            this.progress.setMessage("Buffering...");
-            this.progress.show();
-
+        else{
+            return false;
         }
     }
 
     @Override
-    protected void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-        if (mediaPlayer != null) {
-            mediaPlayer.reset();
-            mediaPlayer.release();
-            mediaPlayer = null;
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft){
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    public class fragPager extends android.support.v4.app.FragmentPagerAdapter{
+        public fragPager(FragmentManager mrBossMan) {super(mrBossMan);}
+
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int position){
+            android.support.v4.app.Fragment fragment = null;
+            switch(position){
+                case 0:
+                    fragment = new Player_Fragment();
+                    break;
+                case 1:
+                    fragment = new About_Fragment();
+                    break;
+                //case 2:
+                //    fragment = new SpellFragment();
+            }
+            return fragment;
+
+        }
+
+        @Override
+        public CharSequence getPageTitle(int tab) {
+            Locale title = Locale.getDefault();
+            if(tab == 0){ return "Player";}
+            //else if (tab == 1){ return "Social"; }
+            else {return "About Us";}
+        }
+
+        @Override
+        public int getCount(){
+            return 2;
         }
     }
 }
