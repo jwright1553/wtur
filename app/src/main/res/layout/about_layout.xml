@@ -40,17 +40,19 @@
         android:layout_centerHorizontal="true"
         android:textColor="#ffffff" />
 
-    <TextView
+    <ExpandableListView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="A final schedule is being created as we speak, check back soon for more information!"
-        android:id="@+id/textView5"
+        android:layout_height="match_parent"
+        android:id="@+id/expandableListView"
         android:layout_below="@+id/textView4"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp"
-        android:textColor="#ffffff"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+        android:layout_marginTop="15dp"
+        android:textAlignment="center"
+        android:touchscreenBlocksFocus="false"
+        android:layout_marginLeft="36dp"
+        android:layout_marginRight="36dp"
+        android:layout_marginBottom="36dp"
+        android:background="@drawable/rouded_corners"
+         />
 
 </RelativeLayout>
