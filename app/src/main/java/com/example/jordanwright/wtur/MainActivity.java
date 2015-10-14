@@ -9,10 +9,18 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import io.fabric.sdk.android.Fabric;
 import java.util.Locale;
 
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "dpTIRbmwH4q1pwInn2eijtLQ5";
+    private static final String TWITTER_SECRET = "0mCAx9leXVxdPvCPzRR6PiNP4fXKo5p5ZQocxA0aZthpftN6k9";
+
 
     ViewPager pageSwitcher;
     fragPager herosSidekick;
@@ -22,6 +30,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
         if (iAmAPhone()) {
 //        requestWindowFeature(Window.FEATURE_ACTION_BAR);
             setContentView(R.layout.activity_main);
@@ -130,8 +140,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 case 1:
                     fragment = new About_Fragment();
                     break;
-                //case 2:
-                //    fragment = new SpellFragment();
+                case 2:
+                    fragment = new Social_Fragment();
             }
             return fragment;
 
@@ -141,13 +151,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public CharSequence getPageTitle(int tab) {
             Locale title = Locale.getDefault();
             if(tab == 0){ return "Player";}
-            //else if (tab == 1){ return "Social"; }
+            else if (tab == 2){ return "Social"; }
             else {return "About Us";}
         }
 
         @Override
         public int getCount(){
-            return 2;
+            return 3;
         }
     }
 }
