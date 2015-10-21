@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +29,7 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View playerView = inflater.inflate(R.layout.media_player_view, container, false);
         btn = (Button) playerView.findViewById(R.id.button1);
-        mediaPlayer = new MediaPlayer();
+        mediaPlayer = MediaPlayer.create(getActivity().getBaseContext(), Uri.parse("http://184.18.181.12:8038/;stream/1"));
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         Log.d("THAGHASLD","WE MADE IT HERE");
         btn.setOnClickListener(pausePlay);
