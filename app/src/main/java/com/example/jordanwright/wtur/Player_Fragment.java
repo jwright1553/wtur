@@ -22,16 +22,12 @@ import java.io.IOException;
 public class Player_Fragment extends android.support.v4.app.Fragment{
 
     Button btn;
-    MediaPlayer mediaPlayer;
     Boolean playPause = true;
-    Boolean initialStage = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View playerView = inflater.inflate(R.layout.media_player_view, container, false);
         btn = (Button) playerView.findViewById(R.id.button1);
-        //mediaPlayer = MediaPlayer.create(getActivity().getBaseContext(), Uri.parse("http://184.18.181.12:8038/;stream/1"));
-        //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         Log.d("THAGHASLD","WE MADE IT HERE");
         btn.setOnClickListener(pausePlay);
         return playerView;
@@ -62,97 +58,16 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
     };
 
 
-
-
-    /**
-     * preparing mediaplayer will take sometime to buffer the content so prepare it inside the background thread and starting it on UI thread.
-     *
-     * @author piyush
-     */
-    /*
-
-    class Player extends AsyncTask<String, Void, Boolean> {
-        private ProgressDialog progress;
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            // TODO Auto-generated method stub
-            Boolean prepared;
-            try {
-
-                mediaPlayer.setDataSource(params[0]);
-
-                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        // TODO Auto-generated method stub
-                        initialStage = true;
-                        playPause = false;
-                        btn.setBackgroundResource(R.drawable.play_button);
-                        mediaPlayer.stop();
-                        mediaPlayer.reset();
-                    }
-                });
-                mediaPlayer.prepare();
-                prepared = true;
-            } catch (IllegalArgumentException e) {
-                // TODO Auto-generated catch block
-                Log.d("IllegarArgument", e.getMessage());
-                prepared = false;
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                // TODO Auto-generated catch block
-                prepared = false;
-                e.printStackTrace();
-            } catch (IllegalStateException e) {
-                // TODO Auto-generated catch block
-                prepared = false;
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                prepared = false;
-                e.printStackTrace();
-            }
-            return prepared;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            // TODO Auto-generated method stub
-            super.onPostExecute(result);
-            if (progress.isShowing()) {
-                progress.cancel();
-            }
-            Log.d("Prepared", "//" + result);
-            mediaPlayer.start();
-
-            initialStage = false;
-        }
-
-        public Player() {
-            progress = new ProgressDialog(getActivity().getApplicationContext());
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-            this.progress.setMessage("Buffering...");
-//            this.progress.show();
-
-        }
-    }
-    */
     @Override
     public void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
-        if (mediaPlayer != null) {
-            mediaPlayer.reset();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
 

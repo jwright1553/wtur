@@ -70,4 +70,9 @@ public class Social_Fragment extends ListFragment {
         });
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+    }
+
 }

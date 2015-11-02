@@ -33,7 +33,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
         if (iAmAPhone()) {
-//        requestWindowFeature(Window.FEATURE_ACTION_BAR);
             setContentView(R.layout.activity_main);
 
 
@@ -77,14 +76,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             setContentView(R.layout.activity_main);
         }
     }
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-    */
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -142,6 +134,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     break;
                 case 2:
                     fragment = new Social_Fragment();
+                    break;
             }
             return fragment;
 
