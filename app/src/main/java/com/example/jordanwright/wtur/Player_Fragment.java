@@ -2,6 +2,7 @@ package com.example.jordanwright.wtur;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -29,8 +30,8 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View playerView = inflater.inflate(R.layout.media_player_view, container, false);
         btn = (Button) playerView.findViewById(R.id.button1);
-        mediaPlayer = MediaPlayer.create(getActivity().getBaseContext(), Uri.parse("http://184.18.181.12:8038/;stream/1"));
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        //mediaPlayer = MediaPlayer.create(getActivity().getBaseContext(), Uri.parse("http://184.18.181.12:8038/;stream/1"));
+        //mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         Log.d("THAGHASLD","WE MADE IT HERE");
         btn.setOnClickListener(pausePlay);
         return playerView;
@@ -43,23 +44,20 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
             // TODO Auto-generated method stub
             // TODO Auto-generated method stub
 
-            if (!playPause) {
+            if(playPause) {
                 btn.setBackgroundResource(R.drawable.trans_pause);
-                if (initialStage)
-                    new Player()
-                            .execute("http://184.18.181.12:8038/;stream/1");
-                else {
-                    if (!mediaPlayer.isPlaying())
-                        mediaPlayer.start();
-                }
-                playPause = true;
-                //this
-            } else {
-                btn.setBackgroundResource(R.drawable.trans_play);
-                if (mediaPlayer.isPlaying())
-                    mediaPlayer.pause();
+                getActivity().getBaseContext().startService(new Intent(getActivity().getBaseContext(), MusicService.class));
+                Log.d("HELLO","TRIEDTOSTART");
                 playPause = false;
             }
+
+            else {
+                Log.d("BROKEN", "DOWQN");
+                btn.setBackgroundResource(R.drawable.trans_play);
+                getActivity().getBaseContext().stopService(new Intent(getActivity().getBaseContext(), MusicService.class));
+                playPause = true;
+            }
+
         }
     };
 
@@ -71,6 +69,7 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
      *
      * @author piyush
      */
+    /*
 
     class Player extends AsyncTask<String, Void, Boolean> {
         private ProgressDialog progress;
@@ -144,7 +143,7 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
 
         }
     }
-
+    */
     @Override
     public void onPause() {
         // TODO Auto-generated method stub
@@ -155,5 +154,6 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
             mediaPlayer = null;
         }
     }
+
 
 }
