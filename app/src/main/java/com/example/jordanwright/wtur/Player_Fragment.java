@@ -67,6 +67,7 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
 
     @Override
     public void onResume() {
+
         super.onResume();
     }
 
