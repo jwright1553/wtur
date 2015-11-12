@@ -22,8 +22,18 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     private static final String TWITTER_SECRET = "0mCAx9leXVxdPvCPzRR6PiNP4fXKo5p5ZQocxA0aZthpftN6k9";
 
 
+
+    Boolean playPauseMain;
     ViewPager pageSwitcher;
     fragPager herosSidekick;
+
+    public Boolean getPlayPauseMain(){
+        return playPauseMain;
+    }
+
+    public void setPlayPauseMain(Boolean changed){
+        playPauseMain = changed;
+    }
 
 
 
@@ -36,6 +46,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             setContentView(R.layout.activity_main);
 
 
+            playPauseMain = false;
             final android.support.v7.app.ActionBar lastActionHero = getSupportActionBar();
 
             lastActionHero.setNavigationMode(android.support.v7.app.ActionBar.NAVIGATION_MODE_TABS);
