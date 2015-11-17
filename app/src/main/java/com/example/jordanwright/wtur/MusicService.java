@@ -19,9 +19,9 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Log.d("THILSFKDLS:", intent.toString());
 
             mMediaPlayer = MediaPlayer.create(getBaseContext(), Uri.parse("http://184.18.181.12:8038/;stream/1"));
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);// initialize it here
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.setOnPreparedListener(this);
-            //mMediaPlayer.prepareAsync(); // prepare async to not block main thread
+
 
 
 
@@ -33,7 +33,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return null;
     }
 
-    /** Called when MediaPlayer is ready */
     public void onPrepared(MediaPlayer player) {
         player.start();
     }

@@ -23,27 +23,37 @@ import java.io.IOException;
 public class Player_Fragment extends android.support.v4.app.Fragment{
 
     Button btn;
+    Button refresh;
     AudioManager manager;
     MainActivity mainActivity;
 
-    //private Boolean playPause = ((MainActivity)getActivity()).getPlayPauseMain();
+
     private Boolean playPause;
-/*
-    public void setPlayPause(Boolean changed){
-        mainActivity.setPlayPauseMain(changed);
-    }
-*/
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View playerView = inflater.inflate(R.layout.media_player_view, container, false);
         btn = (Button) playerView.findViewById(R.id.button1);
+        refresh = (Button) playerView.findViewById(R.id.refresh);
         Log.d("THAGHASLD","WE MADE IT HERE");
         manager = (AudioManager) this.getActivity().getSystemService(Context.AUDIO_SERVICE);
         btn.setOnClickListener(pausePlay);
+        refresh.setOnClickListener(refresher);
         return playerView;
 
 
     }
+
+    private View.OnClickListener refresher = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            if (manager.isMusicActive()) {
+                getActivity().getBaseContext().stopService(new Intent(getActivity().getBaseContext(), MusicService.class));
+                getActivity().getBaseContext().startService(new Intent(getActivity().getBaseContext(), MusicService.class));
+            }
+        }
+    };
 
     private View.OnClickListener pausePlay = new View.OnClickListener() {
 
@@ -52,21 +62,15 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
             // TODO Auto-generated method stub
             // TODO Auto-generated method stub
 
-
-           // Log.d("PLAYPAUSE", mainActivity.getPlayPauseMain().toString());
-            //playPause = mainActivity.getPlayPauseMain();
-
             if(!manager.isMusicActive()) {
                 btn.setBackgroundResource(R.drawable.trans_pause);
                 getActivity().getBaseContext().startService(new Intent(getActivity().getBaseContext(), MusicService.class));
                 Log.d("HELLO", "TRIEDTOSTART");
-                //setPlayPause(false);
-                //playPause = false;
+
             } else {
                 Log.d("BROKEN", "DOWQN");
                 btn.setBackgroundResource(R.drawable.trans_play);
                 getActivity().getBaseContext().stopService(new Intent(getActivity().getBaseContext(), MusicService.class));
-                //playPause = true;
             }
 
         }

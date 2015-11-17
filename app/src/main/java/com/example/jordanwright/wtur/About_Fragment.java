@@ -57,30 +57,35 @@ public class About_Fragment extends android.support.v4.app.Fragment {
         listDataHeader.add("Friday");
 
         // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("8pm: A Day From Sunday");
-        top250.add("9pm: Echoes");
-        top250.add("9:30pm DJ Emily Nosek");
+        List<String> monday = new ArrayList<String>();
+        monday.add("8pm: A Day From Sunday");
+        monday.add("9pm: Echoes");
+        monday.add("9:30pm DJ Emily Nosek");
 
 
-        List<String> nowShowing = new ArrayList<String>();
-        nowShowing.add("The Conjuring");
-        nowShowing.add("Despicable Me 2");
-        nowShowing.add("Turbo");
-        nowShowing.add("Grown Ups 2");
-        nowShowing.add("Red 2");
-        nowShowing.add("The Wolverine");
+        List<String> tuesday = new ArrayList<String>();
+        tuesday.add("6pm: Three Guys and a Hat");
+        tuesday.add("7pm: Landry and Andy");
+        tuesday.add("9pm: From Way Downtown");
+        tuesday.add("10pm: Livin' Large");
 
-        List<String> comingSoon = new ArrayList<String>();
-        comingSoon.add("2 Guns");
-        comingSoon.add("The Smurfs 2");
-        comingSoon.add("The Spectacular Now");
-        comingSoon.add("The Canyons");
-        comingSoon.add("Europa Report");
 
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);
+        List<String> wednesday = new ArrayList<String>();
+        wednesday.add("6pm: Three Guys and a Hat");
+        wednesday.add("8pm: K9");
+
+        List<String> thursday = new ArrayList<String>();
+        thursday.add("4pm: The Finer Things");
+        thursday.add("6pm: Just a Bit Outside");
+        thursday.add("9pm: DJ Alex");
+
+        List<String> friday = new ArrayList<String>();
+        friday.add("9pm: From Way Downtown");
+        listDataChild.put(listDataHeader.get(0), monday); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), tuesday);
+        listDataChild.put(listDataHeader.get(2), wednesday);
+        listDataChild.put(listDataHeader.get(3), thursday);
+        listDataChild.put(listDataHeader.get(4), friday);
     }
 
 }
