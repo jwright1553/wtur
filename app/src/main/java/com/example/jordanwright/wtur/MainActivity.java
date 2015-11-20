@@ -2,11 +2,14 @@ package com.example.jordanwright.wtur;
 
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -28,6 +31,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     Boolean playPauseMain;
     ViewPager pageSwitcher;
     fragPager herosSidekick;
+
+    PhoneStateListener phoneStateListener;
 
     public Boolean getPlayPauseMain(){
         return playPauseMain;
@@ -91,6 +96,24 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         else{
             setContentView(R.layout.activity_main);
         }
+
+        phoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                if (state == TelephonyManager.CALL_STATE_RINGING) {
+                    //Incoming call: Pause music
+                } else if(state == TelephonyManager.CALL_STATE_IDLE) {
+                    //Not in call: Play music
+                } else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                    //A call is dialing, active or on hold
+                }
+                super.onCallStateChanged(state, incomingNumber);
+            }
+        };
+        TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        if(mgr != null) {
+            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
     }
 
     @Override
@@ -107,6 +130,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft){
         pageSwitcher.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        if(mgr != null) {
+            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+        }
     }
 
     public boolean iAmAPhone(){
@@ -166,6 +198,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return 3;
         }
     }
+
+
+
+
+
 }
 
 
