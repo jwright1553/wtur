@@ -32,7 +32,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     ViewPager pageSwitcher;
     fragPager herosSidekick;
 
-    PhoneStateListener phoneStateListener;
 
     public Boolean getPlayPauseMain(){
         return playPauseMain;
@@ -97,23 +96,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             setContentView(R.layout.activity_main);
         }
 
-        phoneStateListener = new PhoneStateListener() {
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                if (state == TelephonyManager.CALL_STATE_RINGING) {
-                    //Incoming call: Pause music
-                } else if(state == TelephonyManager.CALL_STATE_IDLE) {
-                    //Not in call: Play music
-                } else if(state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                    //A call is dialing, active or on hold
-                }
-                super.onCallStateChanged(state, incomingNumber);
-            }
-        };
-        TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        if(mgr != null) {
-            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-        }
+
     }
 
     @Override
@@ -135,10 +118,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     public void onDestroy(){
         super.onDestroy();
-        TelephonyManager mgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        if(mgr != null) {
-            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
-        }
+
     }
 
     public boolean iAmAPhone(){

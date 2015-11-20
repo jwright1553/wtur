@@ -5,6 +5,8 @@
         android:minSdkVersion="9"
         android:targetSdkVersion="19" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,6 +21,8 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+
             </intent-filter>
         </activity>
         <uses-feature android:name="android.hardware.telephony"/>
@@ -26,6 +30,15 @@
             android:name="io.fabric.ApiKey"
             android:value="801d48a6d7bc7d63e55107e17dfc5718077d4abd" />
         <service android:name=".MusicService" android:enabled="true" />
+
+        <receiver
+            android:name="com.example.jordanwright.wtur.NetworkChangeReceiver"
+            android:label="NetworkChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

@@ -31,6 +31,12 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
     Button refresh;
     AudioManager manager;
     MainActivity mainActivity;
+    PhoneStateListener phoneStateListener;
+
+    public static int TYPE_WIFI = 1;
+    public static int TYPE_MOBILE = 2;
+    public static int TYPE_NOT_CONNECTED = 0;
+
 
 
     private Boolean playPause;
@@ -44,6 +50,21 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
         manager = (AudioManager) this.getActivity().getSystemService(Context.AUDIO_SERVICE);
         btn.setOnClickListener(pausePlay);
         refresh.setOnClickListener(refresher);
+
+        phoneStateListener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                if (state == TelephonyManager.CALL_STATE_RINGING) {
+                    getActivity().getBaseContext().stopService(new Intent(getActivity().getBaseContext(), MusicService.class));
+                }
+                super.onCallStateChanged(state, incomingNumber);
+            }
+        };
+        TelephonyManager mgr = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+        if(mgr != null) {
+            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
+
         return playerView;
 
 
@@ -67,7 +88,8 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
             // TODO Auto-generated method stub
             // TODO Auto-generated method stub
         Boolean network = isDataConnected();
-        Log.d("NETWORKSTUFF", Boolean.toString(network));
+        //Boolean network = true;
+            Log.d("NETWORKSTUFF", Boolean.toString(network));
         if (network) {
 
             if (!manager.isMusicActive()) {
@@ -82,19 +104,23 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
             }
         } else {
             Toast.makeText(getActivity().getApplicationContext(), "No network connection available", Toast.LENGTH_LONG).show();
+            btn.setBackgroundResource(R.drawable.trans_play);
+            getActivity().getBaseContext().stopService(new Intent(getActivity().getBaseContext(), MusicService.class));
+
         }
 
         }
     };
 
 
-    private boolean isDataConnected() {
+    public boolean isDataConnected() {
         try {
             Log.d("TRYING","TRYING");
             ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-            Log.d("NEWNETWORK", Boolean.toString(networkInfo.isConnected()));
-            return networkInfo.isConnected();
+            NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            NetworkInfo serviceInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+            //Log.d("NEWNETWORK", Boolean.toString(networkInfo.isConnected()));
+            return (wifiInfo.isConnectedOrConnecting() || serviceInfo.isConnectedOrConnecting());
         } catch (Exception e) {
             return false;
         }
@@ -119,7 +145,43 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
         super.onResume();
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        TelephonyManager mgr = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+        if(mgr != null) {
+            mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+        }
+        getActivity().getBaseContext().stopService(new Intent(getActivity().getBaseContext(), MusicService.class));
+    }
 
+    public static int getConnectivityStatus(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if(activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return TYPE_WIFI;
+
+            if(activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return TYPE_MOBILE;
+        }
+        return TYPE_NOT_CONNECTED;
+    }
+
+    public static String getConnectivityStatusString(Context context) {
+        int conn = Player_Fragment.getConnectivityStatus(context);
+        String status = null;
+        if (conn == Player_Fragment.TYPE_WIFI) {
+            status = "Wifi enabled";
+        } else if (conn == Player_Fragment.TYPE_MOBILE) {
+            status = "Mobile data enabled";
+        } else if (conn == Player_Fragment.TYPE_NOT_CONNECTED) {
+            status = "Not connected to Internet";
+        }
+        return status;
+    }
 
 
 }
