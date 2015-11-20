@@ -32,6 +32,8 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
     AudioManager manager;
     MainActivity mainActivity;
     PhoneStateListener phoneStateListener;
+    AudioManager.OnAudioFocusChangeListener listener;.
+    Boolean serviceRunning;
 
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
@@ -50,6 +52,24 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
         manager = (AudioManager) this.getActivity().getSystemService(Context.AUDIO_SERVICE);
         btn.setOnClickListener(pausePlay);
         refresh.setOnClickListener(refresher);
+        serviceRunning = false;
+
+        listener = new AudioManager.OnAudioFocusChangeListener() {
+            @Override
+            public void onAudioFocusChange(int i) {
+                switch (i)
+                {
+                    case AudioManager.AUDIOFOCUS_GAIN:
+                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                        getActivity().getBaseContext().startService(new Intent(getActivity().getBaseContext(), MusicService.class));
+                        break;
+                    case AudioManager.AUDIOFOCUS_LOSS:
+                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                        getActivity().getBaseContext().stopService(new Intent(getActivity().getBaseContext(), MusicService.class));
+                        break;
+                }
+            }
+        };
 
         phoneStateListener = new PhoneStateListener() {
             @Override
@@ -94,6 +114,8 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
 
             if (!manager.isMusicActive()) {
                 btn.setBackgroundResource(R.drawable.trans_pause);
+                manager.requestAudioFocus(listener, AudioManager.STREAM_MUSIC,
+                        AudioManager.AUDIOFOCUS_GAIN);
                 getActivity().getBaseContext().startService(new Intent(getActivity().getBaseContext(), MusicService.class));
                 Log.d("HELLO", "TRIEDTOSTART");
 
@@ -153,6 +175,7 @@ public class Player_Fragment extends android.support.v4.app.Fragment{
             mgr.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         }
         getActivity().getBaseContext().stopService(new Intent(getActivity().getBaseContext(), MusicService.class));
+
     }
 
     public static int getConnectivityStatus(Context context) {
